@@ -32,7 +32,6 @@ def getNames():
 '''
     HashTable format = {name: submissionScore}
 '''
-@app.route('/ranks')
 def getScores():
     totalScore = {}
     for i in inputData:
@@ -42,6 +41,20 @@ def getScores():
         logger.info(score)
         totalScore[i['name']] = totalScore.get(i['name'], 0) + score
     
+    return jsonify(totalScore)
+
+'''
+    Check for more than 3 submissions
+'''
+@app.route('/ranks')
+def validUsers():
+    totalScore = {}
+    for i in inputData:
+        score = 0
+        if len(i['submissions']) >= 3:
+            for j in i['submissions']:
+                score += j['score']
+            totalScore[i['name']] = totalScore.get(i['name'], 0) + score
     return jsonify(totalScore)
 
 
