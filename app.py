@@ -2,6 +2,7 @@
     This is the main file of the Flask app
 '''
 
+from copy import deepcopy
 from flask import Flask, jsonify
 import logging, json
 
@@ -16,6 +17,15 @@ logging.basicConfig(level=logging.INFO,format='%(asctime)s: %(levelname)s: %(mes
 # Load the JSON Dataset
 with open(dataset, 'r', encoding='utf-8') as data_file:    
     inputData = json.load(data_file)
+
+# Sort the JSON on the basis of score
+def sort_submissions_of_items(json_list):
+    for item in json_list:
+        subs = item.get("submissions", [])
+        if isinstance(subs, list):
+            subs.sort(key=lambda x: x.get("score", 0), reverse=True)
+
+sort_submissions_of_items(inputData)
 
 @app.route('/')
 def index():
@@ -38,7 +48,7 @@ def getScores():
         score = 0
         for j in i['submissions']:
             score += j['score']
-        logger.info(score)
+        #logger.info(score)
         totalScore[i['name']] = totalScore.get(i['name'], 0) + score
     
     return jsonify(totalScore)
@@ -46,7 +56,6 @@ def getScores():
 '''
     Check for more than 3 submissions
 '''
-@app.route('/ranks')
 def validUsers():
     totalScore = {}
     for i in inputData:
@@ -57,6 +66,27 @@ def validUsers():
             totalScore[i['name']] = totalScore.get(i['name'], 0) + score
     return jsonify(totalScore)
 
+'''
+    Sum of best 24 submissions
+'''
+@app.route('/ranks')
+def bestScore():
+    totalScore = {}
+    for i in inputData:
+        score = 0
+        if len(i['submissions']) >= 3 and len(i['submissions']) <=24:
+            for j in i['submissions']:
+                score += j['score']
+            totalScore[i['name']] = totalScore.get(i['name'], 0) + score
+        
+        if len(i['submissions']) > 24:
+            for j in range(len(i['submissions'])):
+                score += i['submissions'][j]['score']
+                logger.info(j)
+                if j > 22:
+                    break
+            totalScore[i['name']] = totalScore.get(i['name'], 0) + score
+    return jsonify(totalScore)
 
 if __name__ == "__main__":
     app.run(debug=True)
