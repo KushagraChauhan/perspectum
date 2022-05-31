@@ -69,7 +69,6 @@ def validUsers():
 '''
     Sum of best 24 submissions
 '''
-@app.route('/ranks')
 def bestScore():
     totalScore = {}
     for i in inputData:
@@ -87,6 +86,31 @@ def bestScore():
                     break
             totalScore[i['name']] = totalScore.get(i['name'], 0) + score
     return jsonify(totalScore)
+
+'''
+    Ranking 
+'''
+@app.route('/ranks')
+def bestScore():
+    totalScore = {}
+    for i in inputData:
+        score = 0
+        if len(i['submissions']) >= 3 and len(i['submissions']) <=24:
+            for j in i['submissions']:
+                score += j['score']
+            totalScore[i['name']] = totalScore.get(i['name'], 0) + score
+        
+        if len(i['submissions']) > 24:
+            for j in range(len(i['submissions'])):
+                score += i['submissions'][j]['score']
+                if j > 22:
+                    break
+            totalScore[i['name']] = totalScore.get(i['name'], 0) + score
+    
+    ranking = sorted(totalScore.items(), key=lambda x: x[1], reverse=True)
+    totalScore = {k: v for k, v in sorted(totalScore.items(), key=lambda item: item[1])}
+    return jsonify(totalScore)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
