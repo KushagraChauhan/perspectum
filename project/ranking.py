@@ -1,16 +1,6 @@
-'''
-    This is the main file of the Flask app
-'''
-from email import header
-from flask import Flask, jsonify, render_template
 import logging, json
-from flask_paginate import Pagination, get_page_parameter
-import os, sys; sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
-#Intializing the Flask app
-app = Flask(__name__)
 dataset = 'scores.json'
-
 # Initialzing logger for better debugging
 logger = logging.getLogger()
 logging.basicConfig(level=logging.INFO,format='%(asctime)s: %(levelname)s: %(message)s')
@@ -31,20 +21,6 @@ def sort_submissions_of_items(json_list):
 
 sort_submissions_of_items(inputData)
 
-header = ["#", "Name", "Score"]
-@app.route('/')
-def index():
-    page, per_page, offset = 1, 10, 0
-    rankings = bestScore()
-    #pagination_rankings = bestScore(offset=offset, per_page=per_page)
-    pagination = Pagination(page=page, per_page=per_page, total=len(rankings),
-                            css_framework='bootstrap4')
-    # pagination = Pagination(page=1, total=len(rankings), search=False, record_name='users', per_page=10)
-    return render_template('index.html', 
-    header='Perspectum Assignment',headers=header,rankings=bestScore(),
-                           page=page,
-                           per_page=10,
-                           pagination=pagination,)
 
 def bestScore():
     totalScore = {}
@@ -64,6 +40,3 @@ def bestScore():
     ranking = sorted(totalScore.items(), key=lambda x: x[1], reverse=True)
     return ranking
 
-
-if __name__ == "__main__":
-    app.run(debug=True)

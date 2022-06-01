@@ -26,7 +26,6 @@
 <div class="container">
     <h1 class="header center blue-text">{{ header }}</h1>
     <p>Here are the rankings</p>
-    {{ pagination.info }}
     <div class="table-responsive">
     <table class="table table-hover">
         <tr>
@@ -36,14 +35,12 @@
         </tr>
         {% for row in rankings %}
         <tr>
-            <td>{{ loop.index + (page - 1) * per_page }}</td>
             {% for cell in row %}
             <td> {{ cell }}</td>
             {% endfor %}
         </tr>
         {% endfor %}
     </table>
-    {{ pagination.links }}
 </div>
 
 
