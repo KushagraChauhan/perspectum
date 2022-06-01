@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ site_title }}</title>
+
+    <!-- CSS  -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css" integrity="sha512-17AHGe9uFHHt+QaRYieK7bTdMMHBMi8PeWG99Mf/xEcfBLDCn0Gze8Xcx1KoSZxDnv+KnCC+os/vuQ7jrF/nkw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+<!--NAVIGATION BAR-->
+<nav class="light-blue lighten-1" role="navigation">
+    <div class="nav-wrapper container"><a id="logo-container" href="" class="brand-logo">{{ site_title }}</a>
+        <ul class="right hide-on-med-and-down">
+            <li><a href="">Home</a></li>
+            <li><a href="">About</a></li>
+        </ul>
+        <a href="" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+    </div>
+</nav>
+
+<!--CONTAINER-->
+<div class="container">
+    <h1 class="header center blue-text">{{ header }}</h1>
+    <p>Here are the rankings</p>
+    {{ pagination.info }}
+    <div class="table-responsive">
+    <table class="table table-hover">
+        <tr>
+            {% for header in headers %}
+            <th>{{header}}</th>
+            {% endfor %}
+        </tr>
+        {% for row in rankings %}
+        <tr>
+            <td>{{ loop.index + (page - 1) * per_page }}</td>
+            {% for cell in row %}
+            <td> {{ cell }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+    {{ pagination.links }}
+</div>
+
+
+</body>
+</html>
