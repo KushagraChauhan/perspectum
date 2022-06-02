@@ -2,5 +2,5 @@ from flask import Flask
 
 app = Flask(__name__)
 
-from project import routes
+from project import routes, errors
 
